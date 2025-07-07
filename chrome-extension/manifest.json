@@ -11,7 +11,9 @@
   ],
   "host_permissions": [
     "http://localhost:5000/*",
-    "https://*.backpages.app/*"
+    "https://*.backpages.app/*",
+    "https://*/*",
+    "http://*/*"
   ],
   "action": {
     "default_popup": "popup.html",

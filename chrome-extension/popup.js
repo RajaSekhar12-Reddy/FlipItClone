@@ -85,7 +85,15 @@ class BackPagesExtension {
         if (!this.currentDomain) return;
 
         try {
-            const response = await fetch(`${this.baseUrl}/api/website/${encodeURIComponent(this.currentDomain)}`);
+            // Show loading state
+            document.getElementById('feedLoading').textContent = 'Loading website data...';
+            
+            const response = await fetch(`${this.baseUrl}/api/website/${encodeURIComponent(this.currentDomain)}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             
             if (response.ok) {
                 this.websiteData = await response.json();
@@ -98,6 +106,15 @@ class BackPagesExtension {
         } catch (error) {
             console.error('Error loading website data:', error);
             this.showErrorState();
+            
+            // Show more detailed error message
+            if (error.message.includes('Failed to fetch')) {
+                document.getElementById('feedLoading').textContent = 
+                    'Cannot connect to BackPages. Make sure the app is running on localhost:5000';
+            } else {
+                document.getElementById('feedLoading').textContent = 
+                    `Error: ${error.message}`;
+            }
         }
     }
 
@@ -272,7 +289,7 @@ class BackPagesExtension {
     }
 
     showErrorState() {
-        document.getElementById('feedLoading').textContent = 'Unable to load data. Please try again later.';
+        document.getElementById('feedLoading').textContent = 'Connection error. Check if BackPages is running on localhost:5000';
     }
 
     openAddContent(type) {
