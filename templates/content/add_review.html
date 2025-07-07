@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Add Review for {{ website.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h1><i class="fas fa-star me-2"></i>Write a Review</h1>
+                <p class="text-muted">Share your experience with <strong>{{ website.domain }}</strong></p>
+            </div>
+
+            <div class="content-form-card">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else ""), placeholder="Brief summary of your experience") }}
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.title.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.rating.label(class="form-label") }}
+                        {{ form.rating(class="form-select" + (" is-invalid" if form.rating.errors else "")) }}
+                        {% if form.rating.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.rating.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.content.label(class="form-label") }}
+                        {{ form.content(class="form-control" + (" is-invalid" if form.content.errors else ""), rows="6", placeholder="Share details about your experience. What worked well? What could be improved?") }}
+                        {% if form.content.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.content.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Be honest and specific. Your review helps others make informed decisions.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('website_back', domain=website.domain) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-star me-1"></i>Publish Review
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Guidelines -->
+            <div class="guidelines-card mt-4">
+                <h5><i class="fas fa-info-circle me-2"></i>Review Guidelines</h5>
+                <ul class="text-muted">
+                    <li>Be honest and fair in your assessment</li>
+                    <li>Focus on your personal experience</li>
+                    <li>Avoid inflammatory language or personal attacks</li>
+                    <li>Include specific details to help others</li>
+                    <li>Reviews are checked for authenticity and quality</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }} - Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Profile Header -->
+    <div class="profile-header mb-4">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="mb-2">
+                    <i class="fas fa-user-circle me-2"></i>{{ user.username }}
+                    {% if user.is_verified %}
+                        <i class="fas fa-check-circle text-success ms-2" title="Verified User"></i>
+                    {% endif %}
+                </h1>
+                <p class="text-muted mb-3">Member since {{ user.created_at.strftime('%B %Y') }}</p>
+                
+                <!-- Credibility Score -->
+                <div class="credibility-section mb-3">
+                    <h4 class="text-success">
+                        <i class="fas fa-trophy me-2"></i>Credibility Score: 
+                        <span class="badge bg-success fs-6">{{ "%.0f"|format(user.credibility_score) }}</span>
+                    </h4>
+                    <div class="progress mb-2" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: {{ min((user.credibility_score / 1000) * 100, 100) }}%"></div>
+                    </div>
+                    <small class="text-muted">
+                        {% if user.credibility_score < 100 %}
+                            Newcomer - Build credibility by contributing quality content
+                        {% elif user.credibility_score < 500 %}
+                            Trusted Contributor - Your voice is gaining recognition
+                        {% elif user.credibility_score < 1000 %}
+                            Expert - Highly respected community member
+                        {% else %}
+                            Authority - Top-tier credibility and influence
+                        {% endif %}
+                    </small>
+                </div>
+
+                <!-- User Stats -->
+                <div class="user-stats">
+                    <span class="badge bg-primary me-2">
+                        <i class="fas fa-star me-1"></i>{{ user.reviews.filter_by(is_bot=False).count() }} Reviews
+                    </span>
+                    <span class="badge bg-danger me-2">
+                        <i class="fas fa-exclamation-triangle me-1"></i>{{ user.complaints.filter_by(is_bot=False).count() }} Complaints
+                    </span>
+                    <span class="badge bg-success">
+                        <i class="fas fa-lightbulb me-1"></i>{{ user.advice.filter_by(is_bot=False).count() }} Advice
+                    </span>
+                </div>
+            </div>
+            {% if current_user == user %}
+            <div class="col-auto">
+                <a href="{{ url_for('settings') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-cog me-1"></i>Settings
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Content Tabs -->
+    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                <i class="fas fa-star me-1"></i>Reviews ({{ reviews|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="complaints-tab" data-bs-toggle="tab" data-bs-target="#complaints" type="button" role="tab">
+                <i class="fas fa-exclamation-triangle me-1"></i>Complaints ({{ complaints|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="advice-tab" data-bs-toggle="tab" data-bs-target="#advice" type="button" role="tab">
+                <i class="fas fa-lightbulb me-1"></i>Advice ({{ advice|length }})
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="profileTabsContent">
+        <!-- Reviews Tab -->
+        <div class="tab-pane fade show active" id="reviews" role="tabpanel">
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="content-card mb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="mb-1">
+                                <a href="{{ url_for('website_back', domain=review.website.domain) }}" class="text-decoration-none">
+                                    {{ review.title }}
+                                </a>
+                            </h5>
+                            <p class="text-muted mb-2">{{ review.website.domain }}</p>
+                            <div class="rating mb-2">
+                                {% for i in range(review.rating) %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% endfor %}
+                                {% for i in range(5 - review.rating) %}
+                                    <i class="far fa-star text-muted"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <small class="text-muted">{{ review.created_at.strftime('%b %d, %Y') }}</small>
+                    </div>
+                    <p class="mb-3">{{ review.content[:200] }}{% if review.content|length > 200 %}...{% endif %}</p>
+                    <div class="content-stats">
+                        <span class="text-muted">
+                            <i class="fas fa-thumbs-up text-success me-1"></i>{{ review.votes.filter_by(value=1).count() }}
+                            <i class="fas fa-thumbs-down text-danger me-1 ms-3"></i>{{ review.votes.filter_by(value=-1).count() }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                    <h4>No reviews yet</h4>
+                    <p class="text-muted">{{ user.username }} hasn't written any reviews yet.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Complaints Tab -->
+        <div class="tab-pane fade" id="complaints" role="tabpanel">
+            {% if complaints %}
+                {% for complaint in complaints %}
+                <div class="content-card mb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="mb-1">
+                                <a href="{{ url_for('website_back', domain=complaint.website.domain) }}" class="text-decoration-none">
+                                    {{ complaint.title }}
+                                </a>
+                            </h5>
+                            <p class="text-muted mb-2">{{ complaint.website.domain }}</p>
+                            <span class="badge bg-danger mb-2">{{ complaint.category.replace('_', ' ').title() }}</span>
+                        </div>
+                        <small class="text-muted">{{ complaint.created_at.strftime('%b %d, %Y') }}</small>
+                    </div>
+                    <p class="mb-3">{{ complaint.content[:200] }}{% if complaint.content|length > 200 %}...{% endif %}</p>
+                    <div class="content-stats">
+                        <span class="text-muted">
+                            <i class="fas fa-thumbs-up text-success me-1"></i>{{ complaint.votes.filter_by(value=1).count() }}
+                            <i class="fas fa-thumbs-down text-danger me-1 ms-3"></i>{{ complaint.votes.filter_by(value=-1).count() }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle fa-3x text-muted mb-3"></i>
+                    <h4>No complaints yet</h4>
+                    <p class="text-muted">{{ user.username }} hasn't submitted any complaints yet.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Advice Tab -->
+        <div class="tab-pane fade" id="advice" role="tabpanel">
+            {% if advice %}
+                {% for item in advice %}
+                <div class="content-card mb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="mb-1">
+                                <a href="{{ url_for('website_back', domain=item.website.domain) }}" class="text-decoration-none">
+                                    {{ item.title }}
+                                </a>
+                            </h5>
+                            <p class="text-muted mb-2">{{ item.website.domain }}</p>
+                            <span class="badge bg-success mb-2">{{ item.category.replace('_', ' ').title() }}</span>
+                        </div>
+                        <small class="text-muted">{{ item.created_at.strftime('%b %d, %Y') }}</small>
+                    </div>
+                    <p class="mb-3">{{ item.content[:200] }}{% if item.content|length > 200 %}...{% endif %}</p>
+                    <div class="content-stats">
+                        <span class="text-muted">
+                            <i class="fas fa-thumbs-up text-success me-1"></i>{{ item.votes.filter_by(value=1).count() }}
+                            <i class="fas fa-thumbs-down text-danger me-1 ms-3"></i>{{ item.votes.filter_by(value=-1).count() }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-lightbulb fa-3x text-muted mb-3"></i>
+                    <h4>No advice yet</h4>
+                    <p class="text-muted">{{ user.username }} hasn't shared any advice yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

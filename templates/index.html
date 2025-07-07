@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title mb-4">
+                    <span class="gradient-text">WEBSITES NOW HAVE BACKS!</span>
+                </h1>
+                <p class="hero-subtitle mb-5">
+                    Discover what's really behind every website through authentic reviews, complaints, and advice from real users.
+                </p>
+                
+                <!-- Main Search Form -->
+                <div class="search-container mb-5">
+                    <form method="POST" action="{{ url_for('go_to_back') }}" class="search-form">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-primary text-white border-primary">
+                                <i class="fas fa-globe"></i>
+                            </span>
+                            <input type="text" name="domain" class="form-control border-primary" 
+                                   placeholder="Enter any website domain (e.g., example.com)" required>
+                            <button class="btn btn-primary px-4" type="submit">
+                                <i class="fas fa-arrow-right me-2"></i>See The Back
+                            </button>
+                        </div>
+                    </form>
+                    <p class="text-muted mt-2">
+                        <small>Or type in your browser: backpages.com/domain.com</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container py-5">
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h4>Instant Reviews</h4>
+                <p class="text-muted">Legit reviews behind every page - no searching required!</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>Credibility System</h4>
+                <p class="text-muted">Build trust through verified contributions and community validation.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h4>Bot Detection</h4>
+                <p class="text-muted">Advanced AI removes fake content, ensuring authentic conversations.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h4>Complaints Hub</h4>
+                <p class="text-muted">Finally, a place where you can vent when you deserve to be heard!</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h4>Expert Advice</h4>
+                <p class="text-muted">Get tips, alternatives, and warnings from experienced users.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h4>Content Validation</h4>
+                <p class="text-muted">Check credibility scores and verify information authenticity.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+{% if recent_reviews or recent_complaints or recent_advice %}
+<div class="container py-5">
+    <h2 class="text-center mb-5">Latest Community Activity</h2>
+    
+    <div class="row g-4">
+        <!-- Recent Reviews -->
+        {% if recent_reviews %}
+        <div class="col-lg-4">
+            <h4 class="text-primary mb-3"><i class="fas fa-star me-2"></i>Recent Reviews</h4>
+            {% for review in recent_reviews %}
+            <div class="activity-card mb-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">{{ review.title }}</h6>
+                        <p class="text-muted small mb-1">{{ review.website.domain }}</p>
+                        <div class="rating">
+                            {% for i in range(review.rating) %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ review.created_at.strftime('%b %d') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recent Complaints -->
+        {% if recent_complaints %}
+        <div class="col-lg-4">
+            <h4 class="text-danger mb-3"><i class="fas fa-exclamation-triangle me-2"></i>Recent Complaints</h4>
+            {% for complaint in recent_complaints %}
+            <div class="activity-card mb-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">{{ complaint.title }}</h6>
+                        <p class="text-muted small mb-1">{{ complaint.website.domain }}</p>
+                        <span class="badge bg-danger">{{ complaint.category.replace('_', ' ').title() }}</span>
+                    </div>
+                    <small class="text-muted">{{ complaint.created_at.strftime('%b %d') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recent Advice -->
+        {% if recent_advice %}
+        <div class="col-lg-4">
+            <h4 class="text-success mb-3"><i class="fas fa-lightbulb me-2"></i>Recent Advice</h4>
+            {% for advice in recent_advice %}
+            <div class="activity-card mb-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">{{ advice.title }}</h6>
+                        <p class="text-muted small mb-1">{{ advice.website.domain }}</p>
+                        <span class="badge bg-success">{{ advice.category.replace('_', ' ').title() }}</span>
+                    </div>
+                    <small class="text-muted">{{ advice.created_at.strftime('%b %d') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Call to Action -->
+<div class="cta-section">
+    <div class="container text-center">
+        <h2 class="mb-4">Start Building Your Credibility</h2>
+        <p class="lead mb-4">Join thousands of users sharing authentic experiences and building trust in the online community.</p>
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-3">
+            <i class="fas fa-user-plus me-2"></i>Join Now
+        </a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+            <i class="fas fa-sign-in-alt me-2"></i>Login
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

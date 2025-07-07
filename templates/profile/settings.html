@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - BackPages{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="mb-4">
+                <i class="fas fa-cog me-2"></i>Account Settings
+            </h1>
+
+            <!-- Account Information -->
+            <div class="settings-card mb-4">
+                <h4 class="mb-3"><i class="fas fa-user me-2"></i>Account Information</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Username:</strong> {{ current_user.username }}</p>
+                        <p><strong>Email:</strong> {{ current_user.email }}</p>
+                        <p><strong>Member Since:</strong> {{ current_user.created_at.strftime('%B %d, %Y') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Credibility Score:</strong> 
+                            <span class="badge bg-success">{{ "%.0f"|format(current_user.credibility_score) }}</span>
+                        </p>
+                        <p><strong>Verification Status:</strong> 
+                            {% if current_user.is_verified %}
+                                <span class="badge bg-success"><i class="fas fa-check me-1"></i>Verified</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Verified</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="settings-card mb-4">
+                <h4 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Your Statistics</h4>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h3 class="text-primary">{{ current_user.reviews.filter_by(is_bot=False).count() }}</h3>
+                            <p class="text-muted">Reviews Written</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h3 class="text-danger">{{ current_user.complaints.filter_by(is_bot=False).count() }}</h3>
+                            <p class="text-muted">Complaints Filed</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h3 class="text-success">{{ current_user.advice.filter_by(is_bot=False).count() }}</h3>
+                            <p class="text-muted">Advice Shared</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credibility Information -->
+            <div class="settings-card mb-4">
+                <h4 class="mb-3"><i class="fas fa-trophy me-2"></i>Credibility System</h4>
+                <p class="text-muted mb-3">Your credibility score is calculated based on several factors:</p>
+                <ul class="text-muted">
+                    <li><strong>Verified Content:</strong> Content verified by the community earns more points</li>
+                    <li><strong>Community Votes:</strong> Upvotes from other users increase your credibility</li>
+                    <li><strong>Account Age:</strong> Longer membership demonstrates commitment</li>
+                    <li><strong>Verification Status:</strong> Verified accounts receive bonus credibility</li>
+                </ul>
+                
+                <div class="mt-3">
+                    <h6>Current Level: 
+                        {% if current_user.credibility_score < 100 %}
+                            <span class="badge bg-secondary">Newcomer</span>
+                        {% elif current_user.credibility_score < 500 %}
+                            <span class="badge bg-primary">Trusted Contributor</span>
+                        {% elif current_user.credibility_score < 1000 %}
+                            <span class="badge bg-warning">Expert</span>
+                        {% else %}
+                            <span class="badge bg-success">Authority</span>
+                        {% endif %}
+                    </h6>
+                    <div class="progress mt-2" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: {{ min((current_user.credibility_score / 1000) * 100, 100) }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy & Safety -->
+            <div class="settings-card mb-4">
+                <h4 class="mb-3"><i class="fas fa-shield-alt me-2"></i>Privacy & Safety</h4>
+                <p class="text-muted">BackPages is committed to maintaining a safe and authentic community:</p>
+                <ul class="text-muted">
+                    <li>Advanced bot detection prevents fake content</li>
+                    <li>Community moderation ensures quality discussions</li>
+                    <li>Your personal information is never shared with third parties</li>
+                    <li>Report inappropriate content using the voting system</li>
+                </ul>
+            </div>
+
+            <!-- Account Actions -->
+            <div class="settings-card">
+                <h4 class="mb-3"><i class="fas fa-tools me-2"></i>Account Actions</h4>
+                <div class="d-grid gap-2 d-md-block">
+                    <button class="btn btn-outline-primary" disabled>
+                        <i class="fas fa-key me-1"></i>Change Password (Coming Soon)
+                    </button>
+                    <button class="btn btn-outline-info" disabled>
+                        <i class="fas fa-envelope me-1"></i>Update Email (Coming Soon)
+                    </button>
+                    <button class="btn btn-outline-warning" disabled>
+                        <i class="fas fa-download me-1"></i>Export Data (Coming Soon)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
