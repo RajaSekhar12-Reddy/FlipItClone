@@ -288,6 +288,55 @@ def go_to_back():
     return redirect(url_for('index'))
 
 # Error handlers
+# API endpoints for Chrome extension
+@app.route('/api/website/<domain>')
+def api_website_data(domain):
+    normalized_domain = normalize_domain(domain)
+    if not normalized_domain or not is_valid_domain(normalized_domain):
+        return jsonify({'error': 'Invalid domain'}), 400
+    
+    website = Website.query.filter_by(domain=normalized_domain).first()
+    if not website:
+        return jsonify({'error': 'Website not found'}), 404
+    
+    reviews = Review.query.filter_by(website_id=website.id, is_bot=False).order_by(Review.created_at.desc()).limit(10).all()
+    complaints = Complaint.query.filter_by(website_id=website.id, is_bot=False).order_by(Complaint.created_at.desc()).limit(10).all()
+    advice = Advice.query.filter_by(website_id=website.id, is_bot=False).order_by(Advice.created_at.desc()).limit(10).all()
+    
+    return jsonify({
+        'website': {
+            'id': website.id,
+            'domain': website.domain,
+            'title': website.title,
+            'description': website.description,
+            'average_rating': website.average_rating,
+            'total_content': website.total_content,
+            'is_verified': website.is_verified
+        },
+        'reviews': [{
+            'id': r.id, 
+            'title': r.title, 
+            'rating': r.rating, 
+            'created_at': r.created_at.isoformat(),
+            'author': r.author.username
+        } for r in reviews],
+        'complaints': [{
+            'id': c.id, 
+            'title': c.title, 
+            'category': c.category, 
+            'created_at': c.created_at.isoformat(),
+            'author': c.author.username
+        } for c in complaints],
+        'advice': [{
+            'id': a.id, 
+            'title': a.title, 
+            'category': a.category, 
+            'created_at': a.created_at.isoformat(),
+            'author': a.author.username
+        } for a in advice]
+    })
+
+# Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404

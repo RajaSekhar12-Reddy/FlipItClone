@@ -269,21 +269,25 @@ document.addEventListener('DOMContentLoaded', setupRatingStars);
 
 // Credibility Score Animation
 function animateCredibilityScore() {
-    const scoreElements = document.querySelectorAll('.badge:contains("credibility"), .credibility-score');
+    const scoreElements = document.querySelectorAll('.badge, .credibility-score');
     
     scoreElements.forEach(element => {
-        const finalScore = parseInt(element.textContent);
-        if (finalScore && finalScore > 0) {
-            let currentScore = 0;
-            const increment = Math.ceil(finalScore / 50);
-            const timer = setInterval(() => {
-                currentScore += increment;
-                if (currentScore >= finalScore) {
-                    currentScore = finalScore;
-                    clearInterval(timer);
-                }
-                element.textContent = currentScore;
-            }, 20);
+        const text = element.textContent;
+        const scoreMatch = text.match(/\d+/);
+        if (scoreMatch) {
+            const finalScore = parseInt(scoreMatch[0]);
+            if (finalScore > 0) {
+                let currentScore = 0;
+                const increment = Math.ceil(finalScore / 50);
+                const timer = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= finalScore) {
+                        currentScore = finalScore;
+                        clearInterval(timer);
+                    }
+                    element.textContent = element.textContent.replace(/\d+/, currentScore);
+                }, 20);
+            }
         }
     });
 }
