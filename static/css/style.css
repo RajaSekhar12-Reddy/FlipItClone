@@ -13,8 +13,9 @@
     --text-primary: #ffffff;
     --text-secondary: #b3b3b3;
     --border-color: #404040;
-    --gradient-primary: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    --gradient-primary: linear-gradient(135deg, #1dd1a1, #55a3ff);
     --gradient-success: linear-gradient(135deg, #00b894, #55a3ff);
+    --hero-gradient: linear-gradient(135deg, #1dd1a1 0%, #55a3ff 100%);
 }
 
 /* Base Styles */
@@ -50,12 +51,15 @@ body {
 
 /* Hero Section */
 .hero-section {
-    background: var(--gradient-primary);
+    background: var(--hero-gradient);
     color: white;
-    padding: 80px 0;
+    padding: 100px 0;
     text-align: center;
     position: relative;
     overflow: hidden;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
 }
 
 .hero-section::before {
@@ -71,18 +75,56 @@ body {
 
 .hero-title {
     font-size: 3.5rem;
-    font-weight: 900;
+    font-weight: 700;
     margin-bottom: 1rem;
     position: relative;
     z-index: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .hero-subtitle {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 300;
     opacity: 0.9;
     position: relative;
     z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero-actions {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-actions .btn {
+    border-radius: 50px;
+    font-weight: 600;
+    text-transform: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.hero-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.hero-actions .btn-light {
+    background: rgba(255,255,255,0.95);
+    color: #333;
+    border: none;
+}
+
+.hero-actions .btn-outline-light {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.8);
+    color: white;
+}
+
+.hero-actions .btn-outline-light:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: white;
 }
 
 .gradient-text {
@@ -96,6 +138,40 @@ body {
 .search-container {
     position: relative;
     z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-form .input-group {
+    border-radius: 50px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.search-form .input-group-text {
+    background: white;
+    border: none;
+    padding: 1rem 1.5rem;
+}
+
+.search-form .form-control {
+    border: none;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background: white;
+    color: #333;
+}
+
+.search-form .form-control:focus {
+    box-shadow: none;
+    border: none;
+    background: white;
+}
+
+.search-form .btn {
+    border-radius: 0 50px 50px 0;
+    padding: 1rem 2rem;
+    font-weight: 600;
 }
 
 .search-form .form-control {

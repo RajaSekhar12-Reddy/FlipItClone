@@ -6,28 +6,47 @@
         <div class="row justify-content-center text-center">
             <div class="col-lg-8">
                 <h1 class="hero-title mb-4">
-                    <span class="gradient-text">WEBSITES NOW HAVE BACKS!</span>
+                    Start Building Your Credibility
                 </h1>
                 <p class="hero-subtitle mb-5">
-                    Discover what's really behind every website through authentic reviews, complaints, and advice from real users.
+                    Join thousands of users sharing authentic experiences and building trust in the online community.
                 </p>
                 
+                <!-- Hero Action Buttons -->
+                <div class="hero-actions mb-5">
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-3 px-5 py-3">
+                        <i class="fas fa-user-plus me-2"></i>Join Now
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-5 py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('search') }}" class="btn btn-light btn-lg me-3 px-5 py-3">
+                        <i class="fas fa-search me-2"></i>Search Websites
+                    </a>
+                    <a href="{{ url_for('profile', username=current_user.username) }}" class="btn btn-outline-light btn-lg px-5 py-3">
+                        <i class="fas fa-user me-2"></i>My Profile
+                    </a>
+                    {% endif %}
+                </div>
+                
                 <!-- Main Search Form -->
-                <div class="search-container mb-5">
+                <div class="search-container">
                     <form method="POST" action="{{ url_for('go_to_back') }}" class="search-form">
                         <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-primary text-white border-primary">
+                            <span class="input-group-text bg-white text-dark border-0">
                                 <i class="fas fa-globe"></i>
                             </span>
-                            <input type="text" name="domain" class="form-control border-primary" 
+                            <input type="text" name="domain" class="form-control border-0" 
                                    placeholder="Enter any website domain (e.g., example.com)" required>
-                            <button class="btn btn-primary px-4" type="submit">
+                            <button class="btn btn-dark px-4 border-0" type="submit">
                                 <i class="fas fa-arrow-right me-2"></i>See The Back
                             </button>
                         </div>
                     </form>
-                    <p class="text-muted mt-2">
-                        <small>Or type in your browser: backpages.com/domain.com</small>
+                    <p class="text-white-50 mt-2">
+                        <small>Discover what's really behind every website</small>
                     </p>
                 </div>
             </div>
@@ -171,14 +190,18 @@
 <!-- Call to Action -->
 <div class="cta-section">
     <div class="container text-center">
-        <h2 class="mb-4">Start Building Your Credibility</h2>
-        <p class="lead mb-4">Join thousands of users sharing authentic experiences and building trust in the online community.</p>
+        <h2 class="mb-4">Discover What's Behind Every Website</h2>
+        <p class="lead mb-4">Real reviews, honest complaints, and helpful advice from verified users.</p>
         {% if not current_user.is_authenticated %}
         <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-3">
-            <i class="fas fa-user-plus me-2"></i>Join Now
+            <i class="fas fa-user-plus me-2"></i>Join Our Community
         </a>
-        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
-            <i class="fas fa-sign-in-alt me-2"></i>Login
+        <a href="{{ url_for('search') }}" class="btn btn-outline-primary btn-lg">
+            <i class="fas fa-search me-2"></i>Explore Websites
+        </a>
+        {% else %}
+        <a href="{{ url_for('search') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-search me-2"></i>Explore More Websites
         </a>
         {% endif %}
     </div>
