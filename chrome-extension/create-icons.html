@@ -4,80 +4,52 @@
     <title>BackPages Icon Generator</title>
 </head>
 <body>
-    <canvas id="canvas16" width="16" height="16"></canvas>
-    <canvas id="canvas32" width="32" height="32"></canvas>
-    <canvas id="canvas48" width="48" height="48"></canvas>
-    <canvas id="canvas128" width="128" height="128"></canvas>
+    <h3>BackPages Chrome Extension Icon Generator</h3>
+    <p>Click the button below to generate and download all icon sizes:</p>
+    <button onclick="generateIcons()">Generate Icons</button>
+    <div id="status"></div>
 
     <script>
-        function createIcon(canvas, size) {
-            const ctx = canvas.getContext('2d');
+        function generateIcons() {
+            const sizes = [16, 32, 48, 128];
+            const status = document.getElementById('status');
+            status.innerHTML = '<p>Generating icons...</p>';
             
-            // Create gradient background
-            const gradient = ctx.createLinearGradient(0, 0, size, size);
-            gradient.addColorStop(0, '#667eea');
-            gradient.addColorStop(1, '#764ba2');
+            sizes.forEach(size => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                // Create gradient background
+                const gradient = ctx.createLinearGradient(0, 0, size, size);
+                gradient.addColorStop(0, '#1dd1a1');
+                gradient.addColorStop(1, '#55a3ff');
+                
+                // Draw background
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, size, size);
+                
+                // Draw white "B" letter
+                ctx.fillStyle = 'white';
+                ctx.font = `bold ${size * 0.6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('B', size / 2, size / 2);
+                
+                // Download the icon
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `icon-${size}.png`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+            });
             
-            // Draw rounded rectangle background
-            ctx.fillStyle = gradient;
-            ctx.roundRect(0, 0, size, size, size * 0.2);
-            ctx.fill();
-            
-            // Draw white grid pattern
-            ctx.fillStyle = 'white';
-            const blockSize = size * 0.15;
-            const margin = size * 0.2;
-            
-            // Top left block
-            ctx.fillRect(margin, margin, blockSize * 2, blockSize * 1.5);
-            
-            // Top right block
-            ctx.fillRect(margin + blockSize * 2.5, margin, blockSize * 2, blockSize);
-            
-            // Bottom left block
-            ctx.fillRect(margin, margin + blockSize * 2, blockSize * 2, blockSize * 1.5);
-            
-            // Bottom right block
-            ctx.fillRect(margin + blockSize * 2.5, margin + blockSize * 1.5, blockSize * 2, blockSize * 2);
+            status.innerHTML = '<p>Icons generated! Check your downloads folder.</p>';
         }
-
-        // Add roundRect function if not available
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-                if (w < 2 * r) r = w / 2;
-                if (h < 2 * r) r = h / 2;
-                this.beginPath();
-                this.moveTo(x + r, y);
-                this.arcTo(x + w, y, x + w, y + h, r);
-                this.arcTo(x + w, y + h, x, y + h, r);
-                this.arcTo(x, y + h, x, y, r);
-                this.arcTo(x, y, x + w, y, r);
-                this.closePath();
-                return this;
-            };
-        }
-
-        // Create all icon sizes
-        createIcon(document.getElementById('canvas16'), 16);
-        createIcon(document.getElementById('canvas32'), 32);
-        createIcon(document.getElementById('canvas48'), 48);
-        createIcon(document.getElementById('canvas128'), 128);
-
-        // Download function
-        function downloadIcon(canvas, filename) {
-            const link = document.createElement('a');
-            link.download = filename;
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        // Auto-download all icons
-        setTimeout(() => {
-            downloadIcon(document.getElementById('canvas16'), 'icon-16.png');
-            downloadIcon(document.getElementById('canvas32'), 'icon-32.png');
-            downloadIcon(document.getElementById('canvas48'), 'icon-48.png');
-            downloadIcon(document.getElementById('canvas128'), 'icon-128.png');
-        }, 1000);
     </script>
 </body>
 </html>
