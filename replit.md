@@ -97,9 +97,53 @@ The application is configured for cloud deployment with:
 
 The application creates database tables automatically on startup and includes comprehensive logging for debugging and monitoring.
 
+## Chrome Extension
+
+A Chrome extension has been implemented to provide seamless integration with the BackPages platform. The extension allows users to:
+
+### Features
+- **Popup Interface**: Compact overlay showing website statistics, recent reviews, complaints, and advice
+- **Floating Button**: Unobtrusive button on every website for quick access to back pages
+- **Context Menu Integration**: Right-click options to check BackPages or contribute content
+- **Badge Notifications**: Shows content count for the current website
+- **API Integration**: Real-time data fetching from BackPages backend
+
+### Technical Implementation
+- **Manifest V3**: Modern Chrome extension architecture
+- **Content Scripts**: Inject floating button and handle page interactions
+- **Background Service Worker**: Manages extension lifecycle and browser events
+- **API Endpoints**: Flask routes at `/api/website/<domain>` provide JSON data
+- **Responsive Design**: Custom CSS with dark theme matching the main application
+
+### Files Structure
+```
+chrome-extension/
+├── manifest.json       # Extension configuration
+├── popup.html         # Extension popup interface
+├── popup.css          # Popup styling
+├── popup.js           # Popup functionality
+├── content.js         # Content script for website integration
+├── content.css        # Content script styling
+├── background.js      # Service worker
+└── icons/            # Extension icons (16px, 32px, 48px, 128px)
+```
+
+### Installation
+Users can load the extension in Chrome by enabling Developer Mode and selecting "Load unpacked" with the chrome-extension folder.
+
+## Recent Architecture Changes
+
+### July 07, 2025 - Chrome Extension Integration
+- Added API endpoint `/api/website/<domain>` returning JSON data for extension consumption
+- Implemented Chrome extension with popup interface similar to Flipit but with custom design
+- Created floating button injection system for seamless website integration
+- Added context menu integration for quick access to BackPages features
+- Established real-time badge notification system showing content counts
+
 ## Changelog
-- July 07, 2025. Initial setup
+- July 07, 2025. Initial setup and Chrome extension implementation
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Request: Create exact clone of Flipit functionality with different design using Flask, JavaScript, and PostgreSQL.
